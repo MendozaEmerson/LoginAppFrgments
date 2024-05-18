@@ -17,10 +17,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.loginapp.databinding.ActivityMainBinding;
+import com.google.gson.Gson;
 
 public class AccountActivity extends AppCompatActivity {
-    //private AccountActivity binding;
     private EntidadCuenta account;
+    public final static String ACCOUNT_RECORD = "ACCOUNT_RECORD";
+    public final static Integer ACCOUNT_ACEPTAR = 100;
+    public final static Integer ACCOUNT_CANCELAR = 200;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +62,7 @@ public class AccountActivity extends AppCompatActivity {
                     Toast.makeText(AccountActivity.this, "Por favor llene todos los campos", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    // Se crea una nueva instancia de EntidadCuenta
+                    // Se declara la instancia de EntidadCuenta
                     account = new EntidadCuenta();
 
                     // Se llena los datos en la instancia de la clase EntidadCuenta
@@ -69,16 +72,34 @@ public class AccountActivity extends AppCompatActivity {
                     account.setPhone(phoneTxt);
                     account.setUserName(userTxt);
                     account.setPassword(passwordTxt);
+
+
                     // Se inicia un intent con direccion a la actividad login
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    /*Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     intent.putExtra("dates", account); // Se inserta la instancia account al intent
                     Toast.makeText(AccountActivity.this, "Se enviaron los datos!!", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Envio satisfactorio");
-                    startActivity(intent);
+                    startActivity(intent);*/
 
+                    // Convierte a formato json
+                    Gson gson = new Gson();
+                    String account_json = gson.toJson(account);
+
+                    Intent data = new Intent();
+                    data.putExtra(ACCOUNT_RECORD, account_json);
+
+                    setResult(ACCOUNT_ACEPTAR, data);
+                    finish();
                 }
             }
         });
 
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(ACCOUNT_CANCELAR);
+                finish();
+            }
+        });
     }
 }

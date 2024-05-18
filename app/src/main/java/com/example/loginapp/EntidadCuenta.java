@@ -3,7 +3,7 @@ package com.example.loginapp;
 import java.io.Serializable;
 
 // Se implementa Serializable para poder usar la clase con putExtra
-public class EntidadCuenta implements Serializable {
+public class EntidadCuenta {
 
     private String firstName;
     private String lastName;

@@ -10,13 +10,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.loginapp.databinding.ActivityMainBinding;
+import com.google.gson.Gson;
 
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    private String accountString;
+
+    private EntidadCuenta account;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,37 +49,66 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = getIntent();
+                /*Intent intent = getIntent();
                 if(intent != null) { // Comprueba si existe el intent
                     EntidadCuenta dates = (EntidadCuenta) intent.getSerializableExtra("dates");
                     if(dates != null) {
                         String userName = dates.getUserName();
-                        String passWord = dates.getPassword();
+                        String passWord = dates.getPassword();*/
 
-                        if (edtUsername.getText().toString().equals(userName) && edtPassword.getText().toString().equals(passWord)){
+                        if (edtUsername.getText().toString().equals(account.getUserName()) && edtPassword.getText().toString().equals(account.getPassword())){
                             Toast.makeText(getApplicationContext(), "Bienvenido a mi APP", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "Bienvenido a mi APP");
 
                             // Se inicia un intent para ir a HomeActivity y enviar al usuario
-                            Intent intentUser = new Intent(getApplicationContext(), HomeActivity.class);
+                            /*Intent intentUser = new Intent(getApplicationContext(), HomeActivity.class);
                             intentUser.putExtra("user", dates.getUserName());
-                            startActivity(intentUser);
+                            startActivity(intentUser);*/
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            intent.putExtra("ACCOUNT", accountString);
+
+                            startActivity(intent);
 
                         } else {
                             Toast.makeText(getApplicationContext(), "Error de Autenticacion", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "Error de Autenticacion");
                         }
-                    }
-                }
+                    /*}
+                }*/
 
             }
         });
 
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult activityResult) {
+                        Integer resultCode = activityResult.getResultCode();
+                        if (resultCode == AccountActivity.ACCOUNT_ACEPTAR){
+                            Intent data = activityResult.getData();
+                            accountString = data.getStringExtra(AccountActivity.ACCOUNT_RECORD);
+
+                            Gson gson = new Gson();
+                            account = gson.fromJson(accountString, EntidadCuenta.class);
+
+                            String firstName = account.getFirstName();
+                            Toast.makeText(LoginActivity.this, "Nombres: " + firstName, Toast.LENGTH_SHORT).show();
+                            Log.d("LoginActivity", "Nombres: " + firstName);
+                        }
+                        else if (resultCode == AccountActivity.ACCOUNT_CANCELAR) {
+                            Toast.makeText(LoginActivity.this, "Cancel Register", Toast.LENGTH_SHORT).show();
+                            Log.d("LoginActivity", "Cancelado");
+                        }
+                    }
+                }
+        );
+
         btnRegister.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), AccountActivity.class);
-            startActivity(intent);
+            //startActivity(intent);
+            activityResultLauncher.launch(intent);
         });
-
-
     }
 }
