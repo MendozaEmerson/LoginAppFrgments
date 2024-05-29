@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Nombres: " + firstName, Toast.LENGTH_SHORT).show();
                             Log.d("LoginActivity", "Nombres: " + firstName);
                         }
-                        else if (resultCode == AccountActivity.ACCOUNT_CANCELAR) {
+                        if (resultCode.equals(AccountActivity.ACCOUNT_CANCELAR)) {
                             Toast.makeText(LoginActivity.this, "Cancel Register", Toast.LENGTH_SHORT).show();
                             Log.d("LoginActivity", "Cancelado");
                         }
