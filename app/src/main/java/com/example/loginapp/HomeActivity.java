@@ -2,9 +2,11 @@ package com.example.loginapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -13,6 +15,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.loginapp.fragments.HomeFragment;
 import com.example.loginapp.fragments.MapFragment;
 import com.example.loginapp.fragments.PaintingsFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.gson.Gson;
 
 public class HomeActivity extends AppCompatActivity {
@@ -34,6 +38,40 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });*/
+        fragmentManager = getSupportFragmentManager();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.btnNav);
+
+        bottomNavigationView.setSelectedItemId(R.id.navHome);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.navHome) {
+                    homeFragment = HomeFragment.newInstance("", "");
+                    loadFragment(homeFragment);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.navPainting) {
+                    paintingsFragment = PaintingsFragment.newInstance("", "");
+                    loadFragment(paintingsFragment);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.navMap) {
+                    mapFragment = MapFragment.newInstance("", "");
+                    loadFragment(mapFragment);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+    }
+
+    private  void loadFragment(Fragment fragment){
+        if (fragmentManager != null){
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragmentContainerView, fragment);
+            fragmentTransaction.commit();
+        }
+    }
         // Encuentra la referencia del TextView
 //        TextView textViewUsername = findViewById(R.id.edtUsernameHome);
 //        TextView textViewFirstName = findViewById(R.id.edtFirstNameHome);
@@ -67,5 +105,5 @@ public class HomeActivity extends AppCompatActivity {
 //        textViewPhone.setText(phoneMsg);
 //        String passwordMsg = "Contraseña: " + account.getPassword();
 //        textViewPassword.setText(passwordMsg);
-    }
+
 }

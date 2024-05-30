@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                         String userName = dates.getUserName();
                         String passWord = dates.getPassword();*/
 
-                        if (edtUsername.getText().toString().equals(account.getUserName()) && edtPassword.getText().toString().equals(account.getPassword())){
+                        if (edtUsername.getText().toString().equals("admin") && edtPassword.getText().toString().equals("123")){
                             Toast.makeText(getApplicationContext(), "Bienvenido a mi APP", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "Bienvenido a mi APP");
 
